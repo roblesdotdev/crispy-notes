@@ -39,6 +39,7 @@
     "@types/source-map-support": "^0.5.6",
     "@typescript-eslint/eslint-plugin": "^6.7.4",
     "@typescript-eslint/parser": "^6.20.0",
+    "autoprefixer": "^10.4.17",
     "chokidar": "^3.5.3",
     "eslint": "^8.38.0",
     "eslint-config-prettier": "^9.0.0",
@@ -49,8 +50,10 @@
     "eslint-plugin-react-hooks": "^4.6.0",
     "husky": "^9.0.10",
     "npm-run-all": "^4.1.5",
+    "postcss": "^8.4.33",
     "prettier": "^3.2.4",
     "prettier-plugin-tailwindcss": "^0.5.11",
+    "tailwindcss": "^3.4.1",
     "typescript": "^5.1.6"
   },
   "engines": {
