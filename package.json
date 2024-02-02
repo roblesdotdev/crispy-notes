@@ -11,7 +11,9 @@
     "typecheck": "tsc -b",
     "prettier": "prettier --ignore-path .gitignore \"**/*.+(js|jsx|css|ts|tsx|cjs)\"",
     "format": "npm run prettier -- --list-different",
-    "format:write": "npm run prettier -- --write"
+    "format:write": "npm run prettier -- --write",
+    "prepare": "husky",
+    "validate": "run-s typecheck format lint"
   },
   "dependencies": {
     "@remix-run/css-bundle": "^2.6.0",
@@ -36,6 +38,7 @@
     "@types/react-dom": "^18.2.7",
     "@types/source-map-support": "^0.5.6",
     "@typescript-eslint/eslint-plugin": "^6.7.4",
+    "@typescript-eslint/parser": "^6.20.0",
     "chokidar": "^3.5.3",
     "eslint": "^8.38.0",
     "eslint-config-prettier": "^9.0.0",
@@ -44,6 +47,8 @@
     "eslint-plugin-jsx-a11y": "^6.7.1",
     "eslint-plugin-react": "^7.33.2",
     "eslint-plugin-react-hooks": "^4.6.0",
+    "husky": "^9.0.10",
+    "npm-run-all": "^4.1.5",
     "prettier": "^3.2.4",
     "prettier-plugin-tailwindcss": "^0.5.11",
     "typescript": "^5.1.6"
