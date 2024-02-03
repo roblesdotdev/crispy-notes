@@ -9,10 +9,12 @@ import {
   ScrollRestoration,
 } from '@remix-run/react'
 import tailwindStylesHref from '~/styles/tailwind.css'
+import fontStylesHref from '~/styles/fonts.css'
 import faviconAssetUrl from '~/assets/favicon.svg'
 
 export const links: LinksFunction = () => [
   { rel: 'icon', type: 'image/svg+xml', href: faviconAssetUrl },
+  { rel: 'stylesheet', href: fontStylesHref },
   { rel: 'stylesheet', href: tailwindStylesHref },
   ...(cssBundleHref ? [{ rel: 'stylesheet', href: cssBundleHref }] : []),
 ]
