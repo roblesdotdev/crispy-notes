@@ -1,3 +1,10 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+@layer base {
+  :root {
+    --canvas: 210 17% 98%;
+    --fg: 215 40% 9%;
+  }
+}
