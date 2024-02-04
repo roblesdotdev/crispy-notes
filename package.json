@@ -16,6 +16,7 @@
     "validate": "run-s typecheck format lint"
   },
   "dependencies": {
+    "@prisma/client": "^5.9.1",
     "@remix-run/css-bundle": "^2.6.0",
     "@remix-run/express": "^2.6.0",
     "@remix-run/node": "^2.6.0",
@@ -54,10 +55,15 @@
     "postcss": "^8.4.33",
     "prettier": "^3.2.4",
     "prettier-plugin-tailwindcss": "^0.5.11",
+    "prisma": "^5.9.1",
     "tailwindcss": "^3.4.1",
+    "tsx": "^4.7.0",
     "typescript": "^5.1.6"
   },
   "engines": {
     "node": ">=18.0.0"
+  },
+  "prisma": {
+    "seed": "tsx prisma/seed"
   }
 }
