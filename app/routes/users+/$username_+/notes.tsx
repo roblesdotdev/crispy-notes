@@ -1,5 +1,5 @@
 import { LoaderFunctionArgs, json } from '@remix-run/node'
-import { Link, Outlet, useLoaderData } from '@remix-run/react'
+import { Link, NavLink, Outlet, useLoaderData } from '@remix-run/react'
 import { db } from '~/lib/db.server'
 import { invariantResponse } from '~/lib/misc'
 
@@ -39,7 +39,12 @@ export default function NotesRoute() {
             </li>
             {owner.notes.map(note => (
               <li key={note.id}>
-                <Link to={note.id}>{note.title}</Link>
+                <NavLink
+                  to={note.id}
+                  className={({ isActive }) => (isActive ? 'underline' : '')}
+                >
+                  {note.title}
+                </NavLink>
               </li>
             ))}
           </ul>
