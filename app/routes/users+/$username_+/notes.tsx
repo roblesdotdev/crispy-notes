@@ -1,6 +1,31 @@
-import { Link, Outlet } from '@remix-run/react'
+import { LoaderFunctionArgs, json } from '@remix-run/node'
+import { Link, Outlet, useLoaderData } from '@remix-run/react'
+import { db } from '~/lib/db.server'
+import { invariantResponse } from '~/lib/misc'
+
+export async function loader({ params }: LoaderFunctionArgs) {
+  const { username } = params
+  const owner = await db.user.findUnique({
+    where: {
+      username,
+    },
+    select: {
+      id: true,
+      name: true,
+      username: true,
+      notes: { select: { id: true, title: true } },
+    },
+  })
+
+  invariantResponse(owner, 'User Not Found', { status: 404 })
+
+  return json({ owner })
+}
 
 export default function NotesRoute() {
+  const data = useLoaderData<typeof loader>()
+  const { owner } = data
+
   return (
     <main className="container flex h-full min-h-[400px] py-2">
       <div className="grid w-full grid-cols-4">
@@ -8,13 +33,15 @@ export default function NotesRoute() {
           <h1 className="font-bold">Notes</h1>
           <ul className="pt-4">
             <li className="mb-2">
-              <Link to="/users/worm" className="font-medium">
-                ← Back
+              <Link to={`/users/${owner.username}`} className="font-medium">
+                ← Back to {owner.name} profile
               </Link>
             </li>
-            <li>
-              <Link to="some-note-id">Some note</Link>
-            </li>
+            {owner.notes.map(note => (
+              <li key={note.id}>
+                <Link to={note.id}>{note.title}</Link>
+              </li>
+            ))}
           </ul>
         </div>
         <div className="col-span-3 bg-slate-200">
