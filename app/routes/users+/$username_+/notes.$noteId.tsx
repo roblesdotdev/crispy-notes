@@ -4,7 +4,7 @@ import {
   json,
   redirect,
 } from '@remix-run/node'
-import { Form, useLoaderData } from '@remix-run/react'
+import { Form, Link, useLoaderData } from '@remix-run/react'
 import { db } from '~/lib/db.server'
 import { invariantResponse } from '~/lib/misc'
 
@@ -50,7 +50,10 @@ export default function NoteDetailRoute() {
         <h1 className="mb-2 font-bold">{note.title}</h1>
         <p>{note.content}</p>
       </div>
-      <div className="flex items-center justify-end bg-slate-100 p-2">
+      <div className="flex items-center justify-end gap-2 bg-slate-100 p-2">
+        <Link to="edit" className="bg-black px-4 py-2 font-medium text-white">
+          Edit
+        </Link>
         <Form method="post">
           <button
             type="submit"
