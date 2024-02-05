@@ -1,7 +1,7 @@
 import type { ActionFunctionArgs, LoaderFunctionArgs } from '@remix-run/node'
 import { Form, json, redirect, useLoaderData } from '@remix-run/react'
 import { db } from '~/lib/db.server'
-import { invariantResponse } from '~/lib/misc'
+import { invariantResponse, useIsPending } from '~/lib/misc'
 
 export async function loader({ params }: LoaderFunctionArgs) {
   const note = await db.note.findUnique({
@@ -42,6 +42,7 @@ export async function action({ params, request }: ActionFunctionArgs) {
 export default function NoteEditRoute() {
   const data = useLoaderData<typeof loader>()
   const { note } = data
+  const isPending = useIsPending()
 
   return (
     <div className="container h-full py-3">
@@ -66,7 +67,8 @@ export default function NoteEditRoute() {
           <button type="reset"> Reset</button>
           <button
             type="submit"
-            className="bg-black px-4 py-2 font-medium text-white"
+            className="bg-black px-4 py-2 font-medium text-white disabled:opacity-50"
+            disabled={isPending}
           >
             Save
           </button>

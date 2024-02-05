@@ -6,7 +6,7 @@ import {
 } from '@remix-run/node'
 import { Form, Link, useLoaderData } from '@remix-run/react'
 import { db } from '~/lib/db.server'
-import { invariantResponse } from '~/lib/misc'
+import { invariantResponse, useIsPending } from '~/lib/misc'
 
 export async function loader({ params }: LoaderFunctionArgs) {
   const { noteId } = params
@@ -43,6 +43,7 @@ export async function action({ request, params }: ActionFunctionArgs) {
 export default function NoteDetailRoute() {
   const data = useLoaderData<typeof loader>()
   const { note } = data
+  const isPending = useIsPending()
 
   return (
     <div className="container flex h-full flex-col py-4">
@@ -59,7 +60,8 @@ export default function NoteDetailRoute() {
             type="submit"
             name="intent"
             value="delete"
-            className="bg-red-600 px-4 py-2 font-medium text-white"
+            className="bg-red-600 px-4 py-2 font-medium text-white disabled:opacity-50"
+            disabled={isPending}
           >
             Delete
           </button>
