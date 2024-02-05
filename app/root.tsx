@@ -8,10 +8,13 @@ import {
   Outlet,
   Scripts,
   ScrollRestoration,
+  json,
+  useLoaderData,
 } from '@remix-run/react'
 import tailwindStylesHref from '~/styles/tailwind.css'
 import fontStylesHref from '~/styles/fonts.css'
 import faviconAssetUrl from '~/assets/favicon.svg'
+import { getEnv } from './lib/env.server'
 
 export const links: LinksFunction = () => [
   { rel: 'icon', type: 'image/svg+xml', href: faviconAssetUrl },
@@ -20,7 +23,15 @@ export const links: LinksFunction = () => [
   ...(cssBundleHref ? [{ rel: 'stylesheet', href: cssBundleHref }] : []),
 ]
 
+export async function loader() {
+  return json({
+    ENV: getEnv(),
+  })
+}
+
 export default function App() {
+  const data = useLoaderData<typeof loader>()
+
   return (
     <html lang="en" className="overflow-x-hidden">
       <head>
@@ -58,6 +69,11 @@ export default function App() {
           </a>
         </footer>
         <ScrollRestoration />
+        <script
+          dangerouslySetInnerHTML={{
+            __html: `window.ENV = ${JSON.stringify(data.ENV)}`,
+          }}
+        />
         <Scripts />
         <LiveReload />
       </body>
