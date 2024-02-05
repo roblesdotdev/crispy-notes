@@ -42,6 +42,7 @@ export default function NotesRoute() {
                 <NavLink
                   to={note.id}
                   className={({ isActive }) => (isActive ? 'underline' : '')}
+                  prefetch="intent"
                 >
                   {note.title}
                 </NavLink>

@@ -22,7 +22,9 @@ export default function ProfileRoute() {
   return (
     <div className="container min-h-[400px] bg-slate-100">
       <h1>{data.user.name} user</h1>
-      <Link to="notes">Notes</Link>
+      <Link to="notes" prefetch="intent">
+        Notes
+      </Link>
     </div>
   )
 }
