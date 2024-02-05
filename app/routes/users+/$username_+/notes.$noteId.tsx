@@ -1,9 +1,11 @@
 import {
-  ActionFunctionArgs,
-  LoaderFunctionArgs,
+  type ActionFunctionArgs,
+  type LoaderFunctionArgs,
+  type MetaFunction,
   json,
   redirect,
 } from '@remix-run/node'
+import type { loader as notesLoader } from './notes'
 import { Form, Link, useLoaderData } from '@remix-run/react'
 import { db } from '~/lib/db.server'
 import { invariantResponse, useIsPending } from '~/lib/misc'
@@ -69,4 +71,26 @@ export default function NoteDetailRoute() {
       </div>
     </div>
   )
+}
+
+export const meta: MetaFunction<
+  typeof loader,
+  { 'routes/users+/$username_+/notes': typeof notesLoader }
+> = ({ data, params, matches }) => {
+  const notesMatch = matches.find(
+    m => m.id === 'routes/users+/$username_+/notes',
+  )
+  const displayName = notesMatch?.data?.owner.name ?? params.username
+  const noteTitle = data?.note.title ?? 'Note'
+  const noteContentsSummary =
+    data && data.note.content.length > 100
+      ? data?.note.content.slice(0, 97) + '...'
+      : 'No content'
+  return [
+    { title: `${noteTitle} | ${displayName}'s Notes | Crispy Notes` },
+    {
+      name: 'description',
+      content: noteContentsSummary,
+    },
+  ]
 }

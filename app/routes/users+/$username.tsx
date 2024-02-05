@@ -1,4 +1,4 @@
-import { LoaderFunctionArgs, json } from '@remix-run/node'
+import { LoaderFunctionArgs, MetaFunction, json } from '@remix-run/node'
 import { Link, useLoaderData } from '@remix-run/react'
 import { db } from '~/lib/db.server'
 import { invariantResponse } from '~/lib/misc'
@@ -27,4 +27,15 @@ export default function ProfileRoute() {
       </Link>
     </div>
   )
+}
+
+export const meta: MetaFunction<typeof loader> = ({ data, params }) => {
+  const displayName = data?.user.name ?? params.username
+  return [
+    { title: `${displayName} | Crispy Notes` },
+    {
+      name: 'description',
+      content: `Checkoout ${displayName} on crispy notes`,
+    },
+  ]
 }
