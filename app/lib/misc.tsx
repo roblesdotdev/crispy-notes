@@ -1,4 +1,6 @@
 import { useFormAction, useNavigation } from '@remix-run/react'
+import { defineConfig } from 'cva'
+import { twMerge } from 'tailwind-merge'
 
 /**
  * Provide a condition and if that condition is falsey, this throws a 400
@@ -77,3 +79,11 @@ export function getErrorMessage(error: unknown) {
   console.error('Unable to get error message for error', error)
   return 'Unknown Error'
 }
+
+// This way, anytime you use the cx(...) function any conflicting Tailwind
+// classes will be gracefully resolved.
+export const { cva, cx, compose } = defineConfig({
+  hooks: {
+    onComplete: className => twMerge(className),
+  },
+})

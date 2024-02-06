@@ -10,6 +10,7 @@ import { Form, Link, useLoaderData } from '@remix-run/react'
 import { db } from '~/lib/db.server'
 import { invariantResponse, useIsPending } from '~/lib/misc'
 import { GeneralErrorBoundary } from '~/components/error-boundary'
+import { Button, buttonVariants } from '~/components/ui/button'
 
 export async function loader({ params }: LoaderFunctionArgs) {
   const { noteId } = params
@@ -55,19 +56,19 @@ export default function NoteDetailRoute() {
         <p>{note.content}</p>
       </div>
       <div className="flex items-center justify-end gap-2 bg-slate-100 p-2">
-        <Link to="edit" className="bg-black px-4 py-2 font-medium text-white">
+        <Link to="edit" className={buttonVariants({ variant: 'solid' })}>
           Edit
         </Link>
         <Form method="post">
-          <button
+          <Button
             type="submit"
             name="intent"
             value="delete"
-            className="bg-red-600 px-4 py-2 font-medium text-white disabled:opacity-50"
-            disabled={isPending}
+            variant="destructive"
+            isDisabled={isPending}
           >
             Delete
-          </button>
+          </Button>
         </Form>
       </div>
     </div>
