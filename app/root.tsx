@@ -40,7 +40,7 @@ export default function App() {
         <Meta />
         <Links />
       </head>
-      <body className="flex min-h-screen flex-col justify-between bg-canvas text-fg antialiased">
+      <body className="flex min-h-screen flex-col bg-canvas text-fg antialiased">
         <header className="container mx-auto py-6">
           <Link to="/">
             <h1>Crispy Notes</h1>

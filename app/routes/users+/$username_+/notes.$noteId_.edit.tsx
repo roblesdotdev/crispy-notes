@@ -1,5 +1,6 @@
 import type { ActionFunctionArgs, LoaderFunctionArgs } from '@remix-run/node'
 import { Form, json, redirect, useLoaderData } from '@remix-run/react'
+import { GeneralErrorBoundary } from '~/components/error-boundary'
 import { db } from '~/lib/db.server'
 import { invariantResponse, useIsPending } from '~/lib/misc'
 
@@ -75,5 +76,17 @@ export default function NoteEditRoute() {
         </div>
       </Form>
     </div>
+  )
+}
+
+export function ErrorBoundary() {
+  return (
+    <GeneralErrorBoundary
+      statusHandlers={{
+        404: ({ params }) => (
+          <p>No note with the id &quot;{params.noteId}&quot; exists.</p>
+        ),
+      }}
+    />
   )
 }

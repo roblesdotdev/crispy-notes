@@ -9,6 +9,7 @@ import type { loader as notesLoader } from './notes'
 import { Form, Link, useLoaderData } from '@remix-run/react'
 import { db } from '~/lib/db.server'
 import { invariantResponse, useIsPending } from '~/lib/misc'
+import { GeneralErrorBoundary } from '~/components/error-boundary'
 
 export async function loader({ params }: LoaderFunctionArgs) {
   const { noteId } = params
@@ -93,4 +94,16 @@ export const meta: MetaFunction<
       content: noteContentsSummary,
     },
   ]
+}
+
+export function ErrorBoundary() {
+  return (
+    <GeneralErrorBoundary
+      statusHandlers={{
+        404: ({ params }) => (
+          <p>No note with the id &quot;{params.noteId}&quot; exists.</p>
+        ),
+      }}
+    />
+  )
 }
