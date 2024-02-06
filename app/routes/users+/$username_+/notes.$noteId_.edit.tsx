@@ -54,18 +54,13 @@ export default function NoteEditRoute() {
     <div className="container h-full py-3">
       <Form method="POST" className="flex h-full flex-col">
         <div className="flex h-full flex-1 flex-col gap-2">
-          <TextField>
-            <Label htmlFor="title">Title</Label>
-            <Input
-              defaultValue={note.title}
-              name="title"
-              id="title"
-              placeholder="Note title..."
-            />
+          <TextField name="title" defaultValue={note.title}>
+            <Label>Title</Label>
+            <Input placeholder="Note title..." />
           </TextField>
-          <TextField>
-            <Label htmlFor="content">Content</Label>
-            <TextArea id="content" name="content" defaultValue={note.content} />
+          <TextField name="content" defaultValue={note.content}>
+            <Label>Content</Label>
+            <TextArea />
           </TextField>
         </div>
         <div className="flex items-center gap-2 self-end">
