@@ -15,6 +15,7 @@ import tailwindStylesHref from '~/styles/tailwind.css'
 import fontStylesHref from '~/styles/fonts.css'
 import faviconAssetUrl from '~/assets/favicon.svg'
 import { getEnv } from './lib/env.server'
+import { GeneralErrorBoundary } from './components/error-boundary'
 
 export const links: LinksFunction = () => [
   { rel: 'icon', type: 'image/svg+xml', href: faviconAssetUrl },
@@ -33,6 +34,44 @@ export default function App() {
   const data = useLoaderData<typeof loader>()
 
   return (
+    <Document>
+      <header className="container mx-auto py-6">
+        <Link to="/">
+          <h1>Crispy Notes</h1>
+        </Link>
+      </header>
+      <div className="flex-1">
+        <Outlet />
+      </div>
+      <footer className="container mx-auto mt-32 flex justify-between py-6">
+        <p>
+          &copy; {new Date().getFullYear()} - by{' '}
+          <a
+            href="https://github.com/roblesdotdev"
+            target="_blank"
+            rel="noreferrer"
+          >
+            Aldo Robles
+          </a>
+        </p>
+        <a
+          href="https://github.com/roblesdotdev/crispy-notes"
+          target="_blank"
+          rel="noreferrer"
+        >
+          Source Code
+        </a>
+      </footer>
+      <script
+        dangerouslySetInnerHTML={{
+          __html: `window.ENV = ${JSON.stringify(data.ENV)}`,
+        }}
+      />
+    </Document>
+  )
+}
+function Document({ children }: { children: React.ReactNode }) {
+  return (
     <html lang="en" className="overflow-x-hidden">
       <head>
         <meta charSet="utf-8" />
@@ -41,42 +80,19 @@ export default function App() {
         <Links />
       </head>
       <body className="flex min-h-screen flex-col bg-canvas text-fg antialiased">
-        <header className="container mx-auto py-6">
-          <Link to="/">
-            <h1>Crispy Notes</h1>
-          </Link>
-        </header>
-        <div className="flex-1">
-          <Outlet />
-        </div>
-        <footer className="container mx-auto mt-32 flex justify-between py-6">
-          <p>
-            &copy; {new Date().getFullYear()} - by{' '}
-            <a
-              href="https://github.com/roblesdotdev"
-              target="_blank"
-              rel="noreferrer"
-            >
-              Aldo Robles
-            </a>
-          </p>
-          <a
-            href="https://github.com/roblesdotdev/crispy-notes"
-            target="_blank"
-            rel="noreferrer"
-          >
-            Source Code
-          </a>
-        </footer>
+        {children}
         <ScrollRestoration />
-        <script
-          dangerouslySetInnerHTML={{
-            __html: `window.ENV = ${JSON.stringify(data.ENV)}`,
-          }}
-        />
         <Scripts />
         <LiveReload />
       </body>
     </html>
+  )
+}
+
+export function ErrorBoundary() {
+  return (
+    <Document>
+      <GeneralErrorBoundary />
+    </Document>
   )
 }
