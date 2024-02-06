@@ -1,11 +1,7 @@
 import type { ActionFunctionArgs, LoaderFunctionArgs } from '@remix-run/node'
 import { Form, json, redirect, useLoaderData } from '@remix-run/react'
 import { GeneralErrorBoundary } from '~/components/error-boundary'
-import { Button } from '~/components/ui/button'
-import { Input } from '~/components/ui/input'
-import { Label } from '~/components/ui/label'
-import { TextArea } from '~/components/ui/textarea'
-import { TextField } from '~/components/ui/textfield'
+import { Button, Input, Label, TextArea, TextField } from '~/components/ui'
 import { db } from '~/lib/db.server'
 import { invariantResponse, useIsPending } from '~/lib/misc'
 
