@@ -1,5 +1,6 @@
 import { useFormAction, useNavigation } from '@remix-run/react'
 import { defineConfig } from 'cva'
+import { useEffect, useState } from 'react'
 import { twMerge } from 'tailwind-merge'
 
 /**
@@ -87,3 +88,11 @@ export const { cva, cx, compose } = defineConfig({
     onComplete: className => twMerge(className),
   },
 })
+
+export function useHydrated() {
+  const [hydrated, setHydrated] = useState(false)
+
+  useEffect(() => setHydrated(true), [])
+
+  return hydrated
+}

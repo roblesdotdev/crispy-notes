@@ -16,7 +16,7 @@ import {
   TextFieldErrorMessage,
 } from '~/components/ui'
 import { db } from '~/lib/db.server'
-import { invariantResponse, useIsPending } from '~/lib/misc'
+import { invariantResponse, useHydrated, useIsPending } from '~/lib/misc'
 
 const titleMaxLength = 50
 const contentMaxLength = 200
@@ -109,13 +109,18 @@ export default function NoteEditRoute() {
   const actionData = useActionData<typeof action>()
   const { note } = data
   const isPending = useIsPending({ state: 'submitting' })
+  const isHydrated = useHydrated()
 
   const fieldErrors = actionData?.errors?.fieldErrors ?? null
   const formErrors = actionData?.errors?.formErrors ?? null
 
   return (
     <div className="container h-full py-3">
-      <Form method="POST" className="flex h-full flex-col" noValidate>
+      <Form
+        method="POST"
+        className="flex h-full flex-col"
+        noValidate={isHydrated}
+      >
         <div className="flex h-full flex-1 flex-col gap-2">
           <TextField
             name="title"
