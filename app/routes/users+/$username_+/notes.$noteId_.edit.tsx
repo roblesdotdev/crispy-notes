@@ -92,9 +92,15 @@ export async function action({ params, request }: ActionFunctionArgs) {
   return redirect(`/users/${params.username}/notes/${params.noteId}`)
 }
 
-function ErrorList({ errors }: { errors?: Array<string> | null }) {
+function ErrorList({
+  errors,
+  id,
+}: {
+  errors?: Array<string> | null
+  id?: string
+}) {
   return errors?.length ? (
-    <ul>
+    <ul id={id}>
       {errors.map((error, i) => (
         <TextFieldErrorMessage key={i} elementType="li">
           {error}
@@ -114,18 +120,28 @@ export default function NoteEditRoute() {
   const fieldErrors = actionData?.errors?.fieldErrors ?? null
   const formErrors = actionData?.errors?.formErrors ?? null
 
+  const formHasErrors = Boolean(formErrors?.length)
+  const formErrorId = formErrors ? 'form-error' : undefined
+  const titleHasErrors = Boolean(fieldErrors?.title.length)
+  const titleErrorId = titleHasErrors ? 'title-error' : undefined
+  const contentHasErrors = Boolean(fieldErrors?.content.length)
+  const contentErrorId = contentHasErrors ? 'content-error' : undefined
+
   return (
     <div className="container h-full py-3">
       <Form
         method="POST"
         className="flex h-full flex-col"
         noValidate={isHydrated}
+        aria-invalid={formHasErrors}
+        aria-describedby={formErrorId}
       >
         <div className="flex h-full flex-1 flex-col gap-2">
           <TextField
             name="title"
             defaultValue={note.title}
-            isInvalid={Boolean(fieldErrors?.title.length)}
+            isInvalid={titleHasErrors}
+            aria-describedby={titleErrorId}
           >
             <Label>Title</Label>
             <Input
@@ -133,16 +149,17 @@ export default function NoteEditRoute() {
               maxLength={titleMaxLength}
               required
             />
-            <ErrorList errors={fieldErrors?.title} />
+            <ErrorList errors={fieldErrors?.title} id={titleErrorId} />
           </TextField>
           <TextField
             name="content"
             defaultValue={note.content}
-            isInvalid={Boolean(fieldErrors?.content.length)}
+            isInvalid={contentHasErrors}
+            aria-describedby={contentErrorId}
           >
             <Label>Content</Label>
             <TextArea maxLength={contentMaxLength} required />
-            <ErrorList errors={fieldErrors?.content} />
+            <ErrorList errors={fieldErrors?.content} id={contentErrorId} />
           </TextField>
         </div>
         <div className="flex items-center gap-2 self-end">
@@ -157,7 +174,7 @@ export default function NoteEditRoute() {
             Save
           </Button>
         </div>
-        <ErrorList errors={formErrors} />
+        <ErrorList errors={formErrors} id={formErrorId} />
       </Form>
     </div>
   )
