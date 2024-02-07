@@ -6,6 +6,7 @@ import {
   useActionData,
   useLoaderData,
 } from '@remix-run/react'
+import { useEffect, useId, useRef } from 'react'
 import { GeneralErrorBoundary } from '~/components/error-boundary'
 import {
   Button,
@@ -78,7 +79,7 @@ export async function action({ params, request }: ActionFunctionArgs) {
     )
 
   if (hasErrors) {
-    return json({ errors }, { status: 400 })
+    return json({ errors, status: 'error' }, { status: 400 })
   }
 
   await db.note.update({
@@ -113,9 +114,10 @@ function ErrorList({
 export default function NoteEditRoute() {
   const data = useLoaderData<typeof loader>()
   const actionData = useActionData<typeof action>()
-  const { note } = data
   const isPending = useIsPending({ state: 'submitting' })
   const isHydrated = useHydrated()
+  const formRef = useRef<HTMLFormElement>(null)
+  const formId = useId()
 
   const fieldErrors = actionData?.errors?.fieldErrors ?? null
   const formErrors = actionData?.errors?.formErrors ?? null
@@ -127,20 +129,42 @@ export default function NoteEditRoute() {
   const contentHasErrors = Boolean(fieldErrors?.content.length)
   const contentErrorId = contentHasErrors ? 'content-error' : undefined
 
+  console.log('Title:', titleHasErrors)
+  console.log('Content:', contentHasErrors)
+
+  useEffect(() => {
+    const formEl = formRef.current
+    if (!formEl) return
+
+    if (actionData?.status !== 'error') return
+
+    if (formEl.matches('[aria-invalid="true"]')) {
+      formEl.focus()
+    } else {
+      const firstInvalidField = formEl.querySelector('[aria-invalid="true"]')
+      if (firstInvalidField instanceof HTMLElement) {
+        firstInvalidField.focus()
+      }
+    }
+  }, [actionData])
+
   return (
     <div className="container h-full py-3">
       <Form
         method="POST"
         className="flex h-full flex-col"
         noValidate={isHydrated}
-        aria-invalid={formHasErrors}
+        aria-invalid={formHasErrors || undefined}
         aria-describedby={formErrorId}
+        ref={formRef}
+        id={formId}
+        tabIndex={-1}
       >
         <div className="flex h-full flex-1 flex-col gap-2">
           <TextField
             name="title"
-            defaultValue={note.title}
-            isInvalid={titleHasErrors}
+            defaultValue={data.note.title}
+            isInvalid={titleHasErrors || undefined}
             aria-describedby={titleErrorId}
           >
             <Label>Title</Label>
@@ -153,7 +177,7 @@ export default function NoteEditRoute() {
           </TextField>
           <TextField
             name="content"
-            defaultValue={note.content}
+            defaultValue={data.note.content}
             isInvalid={contentHasErrors}
             aria-describedby={contentErrorId}
           >

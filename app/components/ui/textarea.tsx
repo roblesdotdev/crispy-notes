@@ -6,6 +6,7 @@ export const TextArea = ({ className, ...props }: ReactAria.TextAreaProps) => {
     <ReactAria.TextArea
       className={cx(
         'w-full rounded-md border border-slate-300 bg-canvas p-4 outline-none focus:ring focus:ring-slate-300 focus:ring-offset-2',
+        'invalid:border-red-500',
         className,
       )}
       {...props}
