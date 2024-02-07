@@ -7,6 +7,7 @@ import {
   useLoaderData,
 } from '@remix-run/react'
 import { useEffect, useId, useRef } from 'react'
+import { z } from 'zod'
 import { GeneralErrorBoundary } from '~/components/error-boundary'
 import {
   Button,
@@ -21,6 +22,11 @@ import { invariantResponse, useHydrated, useIsPending } from '~/lib/misc'
 
 const titleMaxLength = 50
 const contentMaxLength = 200
+
+const NoteEditorSchema = z.object({
+  title: z.string().min(1).max(titleMaxLength),
+  content: z.string().min(1).max(contentMaxLength),
+})
 
 export async function loader({ params }: LoaderFunctionArgs) {
   const note = await db.note.findUnique({
@@ -37,50 +43,20 @@ export async function loader({ params }: LoaderFunctionArgs) {
 
 export async function action({ params, request }: ActionFunctionArgs) {
   const formData = await request.formData()
-  const title = formData.get('title')
-  const content = formData.get('content')
 
-  invariantResponse(typeof title === 'string', 'Title must be a string', {
-    status: 400,
-  })
-  invariantResponse(typeof content === 'string', 'Content must be a string', {
-    status: 400,
+  const result = NoteEditorSchema.safeParse({
+    title: formData.get('title'),
+    content: formData.get('content'),
   })
 
-  const errors = {
-    formErrors: [] as string[],
-    fieldErrors: {
-      title: [] as string[],
-      content: [] as string[],
-    },
-  }
-
-  if (title === '') {
-    errors.fieldErrors.title.push('Title is required')
-  }
-  if (title.length > titleMaxLength) {
-    errors.fieldErrors.title.push(
-      `Title must be ${titleMaxLength} characters or less`,
-    )
-  }
-  if (content === '') {
-    errors.fieldErrors.content.push('Content is required')
-  }
-  if (content.length > contentMaxLength) {
-    errors.fieldErrors.content.push(
-      `Content must be ${contentMaxLength} characters or less`,
+  if (!result.success) {
+    return json(
+      { errors: result.error.flatten(), status: 'error' },
+      { status: 400 },
     )
   }
 
-  const hasErrors =
-    errors.formErrors.length > 0 ||
-    Object.values(errors.fieldErrors).some(
-      fieldErrors => fieldErrors.length > 0,
-    )
-
-  if (hasErrors) {
-    return json({ errors, status: 'error' }, { status: 400 })
-  }
+  const { title, content } = result.data
 
   await db.note.update({
     where: { id: params.noteId },
@@ -124,9 +100,9 @@ export default function NoteEditRoute() {
 
   const formHasErrors = Boolean(formErrors?.length)
   const formErrorId = formErrors ? 'form-error' : undefined
-  const titleHasErrors = Boolean(fieldErrors?.title.length)
+  const titleHasErrors = Boolean(fieldErrors?.title?.length)
   const titleErrorId = titleHasErrors ? 'title-error' : undefined
-  const contentHasErrors = Boolean(fieldErrors?.content.length)
+  const contentHasErrors = Boolean(fieldErrors?.content?.length)
   const contentErrorId = contentHasErrors ? 'content-error' : undefined
 
   console.log('Title:', titleHasErrors)
