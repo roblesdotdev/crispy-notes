@@ -8,7 +8,7 @@ import {
 import type { loader as notesLoader } from './notes'
 import { Form, Link, useLoaderData } from '@remix-run/react'
 import { db } from '~/lib/db.server'
-import { invariantResponse, useIsPending } from '~/lib/misc'
+import { getNoteImgSrc, invariantResponse, useIsPending } from '~/lib/misc'
 import { GeneralErrorBoundary } from '~/components/error-boundary'
 import { Button, buttonVariants } from '~/components/ui/button'
 
@@ -22,6 +22,12 @@ export async function loader({ params }: LoaderFunctionArgs) {
       content: true,
       ownerId: true,
       updatedAt: true,
+      images: {
+        select: {
+          id: true,
+          altText: true,
+        },
+      },
     },
   })
 
@@ -53,6 +59,19 @@ export default function NoteDetailRoute() {
     <div className="container flex h-full flex-col py-4">
       <div className="flex-1">
         <h1 className="mb-2 font-bold">{note.title}</h1>
+        <ul className="flex flex-wrap gap-5 py-5">
+          {note.images.map(image => (
+            <li key={image.id}>
+              <a href={getNoteImgSrc(image.id)}>
+                <img
+                  alt={image.altText ?? ''}
+                  src={getNoteImgSrc(image.id)}
+                  className="h-32 w-32 rounded-lg object-cover"
+                />
+              </a>
+            </li>
+          ))}
+        </ul>
         <p>{note.content}</p>
       </div>
       <div className="flex items-center justify-end gap-2 bg-slate-100 p-2">

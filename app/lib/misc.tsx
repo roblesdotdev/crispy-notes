@@ -96,3 +96,7 @@ export function useHydrated() {
 
   return hydrated
 }
+
+export function getNoteImgSrc(imageId: string) {
+  return `/resources/note-images/${imageId}`
+}
