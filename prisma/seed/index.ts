@@ -1,5 +1,5 @@
 import { db } from '~/lib/db.server'
-import { createPassword, createUser } from './utils'
+import { createPassword, createUser, img } from './utils'
 import { faker } from '@faker-js/faker'
 
 async function seed() {
@@ -46,6 +46,12 @@ async function seed() {
             id: 'd27a197e',
             title: "First Worm's Note",
             content: 'This is the first note created for the user worm.',
+            images: {
+              create: await img({
+                altText: 'an illustration of a hot air balloon',
+                filepath: './tests/fixtures/images/notes/1.png',
+              }),
+            },
           },
         ],
       },

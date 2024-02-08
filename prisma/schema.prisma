@@ -40,4 +40,19 @@ model Note {
 
   owner   User   @relation(fields: [ownerId], references: [id], onDelete: Cascade, onUpdate: Cascade)
   ownerId String
+
+  images NoteImage[]
+}
+
+model NoteImage {
+  id          String  @id @default(cuid())
+  contentType String
+  blob        Bytes
+  altText     String?
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  note   Note   @relation(fields: [noteId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  noteId String
 }

@@ -1,3 +1,4 @@
+import fs from 'node:fs'
 import { faker } from '@faker-js/faker'
 import bcrypt from 'bcryptjs'
 import { UniqueEnforcer } from 'enforce-unique'
@@ -33,5 +34,19 @@ export function createUser() {
 export function createPassword(password: string = faker.internet.password()) {
   return {
     hash: bcrypt.hashSync(password, 10),
+  }
+}
+
+export async function img({
+  altText,
+  filepath,
+}: {
+  altText?: string
+  filepath: string
+}) {
+  return {
+    altText,
+    contentType: filepath.endsWith('.png') ? 'image/png' : 'image/jpeg',
+    blob: await fs.promises.readFile(filepath),
   }
 }
