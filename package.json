@@ -16,6 +16,8 @@
     "validate": "run-s typecheck format lint"
   },
   "dependencies": {
+    "@conform-to/react": "^1.0.1",
+    "@conform-to/zod": "^1.0.1",
     "@prisma/client": "^5.9.1",
     "@remix-run/css-bundle": "^2.6.0",
     "@remix-run/express": "^2.6.0",
