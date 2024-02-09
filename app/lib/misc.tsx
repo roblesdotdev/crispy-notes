@@ -1,4 +1,5 @@
 import { useFormAction, useNavigation } from '@remix-run/react'
+import clsx, { ClassValue } from 'clsx'
 import { defineConfig } from 'cva'
 import { useEffect, useState } from 'react'
 import { twMerge } from 'tailwind-merge'
@@ -99,4 +100,12 @@ export function useHydrated() {
 
 export function getNoteImgSrc(imageId: string) {
   return `/resources/note-images/${imageId}`
+}
+
+/**
+ * A handy utility that makes constructing class names easier.
+ * It also merges tailwind classes.
+ */
+export function cn(...inputs: ClassValue[]) {
+  return twMerge(clsx(inputs))
 }
