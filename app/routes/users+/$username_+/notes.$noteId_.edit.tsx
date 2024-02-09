@@ -44,7 +44,8 @@ const NoteEditorSchema = z.object({
   altText: z.string().optional(),
   file: z
     .instanceof(File)
-    .refine(file => file.size <= MAX_UPLOAD_SIZE, 'Image is too large'),
+    .refine(file => file.size <= MAX_UPLOAD_SIZE, 'Image is too large')
+    .optional(),
 })
 
 export async function loader({ params }: LoaderFunctionArgs) {
@@ -83,21 +84,30 @@ export async function action({ params, request }: ActionFunctionArgs) {
 
   const { title, content, imageId, file, altText } = submission.value
 
+  const objImage = file
+    ? {
+        altText,
+        contentType: file.type,
+        blob: Buffer.from(await file.arrayBuffer()),
+      }
+    : []
+
   await db.note.update({
     where: { id: params.noteId },
     data: {
       title,
       content,
       images: {
-        update: {
-          where: { id: imageId },
-          data: {
-            id: cuid(),
-            altText: altText,
-            contentType: file.type,
-            blob: Buffer.from(await file.arrayBuffer()),
+        updateMany: [
+          {
+            where: { id: imageId },
+            data: {
+              id: cuid(),
+              ...objImage,
+            },
           },
-        },
+        ],
+        create: objImage,
       },
     },
   })
